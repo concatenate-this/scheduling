@@ -5,7 +5,7 @@
 
 #define MAX_PROCESSES 10
 
-// --- Colour palette (minimal) ---
+//colours
 #define COL_BG        (Color){13,  17,  23,  255}
 #define COL_SURFACE   (Color){22,  27,  34,  255}
 #define COL_BORDER    (Color){48,  54,  61,  255}
@@ -31,7 +31,7 @@ typedef struct {
 } Process;
 
 void computeFCFS(Process *procs, int n) {
-    // Sort by arrival time (insertion sort)
+    //sort by arrival time
     for (int i = 1; i < n; i++) {
         Process key = procs[i];
         int j = i - 1;
@@ -53,7 +53,7 @@ void computeFCFS(Process *procs, int n) {
     }
 }
 
-// Draw text with custom font, convenience wrapper
+//now the graphics part ig
 static Font gFont;
 static void FDraw(const char *text, int x, int y, int size, Color col) {
     DrawTextEx(gFont, text, (Vector2){x, y}, size, 1, col);
@@ -69,7 +69,7 @@ int main(void) {
     SetTextureFilter(gFont.texture, TEXTURE_FILTER_BILINEAR);
     SetTargetFPS(60);
 
-    int state = 0;  // 0 = input, 1 = results
+    int state = 0;  //0 = input, 1 = results
 
     int n = 3;
     int arrival[MAX_PROCESSES] = {0, 2, 4, 0, 0, 0, 0, 0, 0, 0};
@@ -84,7 +84,7 @@ int main(void) {
 
     while (!WindowShouldClose()) {
 
-        // ---- UPDATE ----
+        //update the fields
         if (state == 0) {
             if (IsKeyPressed(KEY_UP)   && n < MAX_PROCESSES) { n++; if (activeField != -1 && activeField/2 >= n) activeField = -1; }
             if (IsKeyPressed(KEY_DOWN) && n > 1)             { n--; if (activeField != -1 && activeField/2 >= n) activeField = -1; }
@@ -142,19 +142,19 @@ int main(void) {
             }
         }
 
-        // ---- DRAW ----
+        //drawing drawing
         BeginDrawing();
         ClearBackground(COL_BG);
 
         if (state == 0) {
-            // Title
+            //#NewTit iykyk (deep DSMP lore)
             const char *title = "FCFS CPU SCHEDULER";
             FDraw(title, SW/2 - FMeasure(title,22)/2, 28, 22, COL_ACCENT);
 
             const char *hint = "UP / DOWN  to add or remove processes   |   click a cell to edit";
             FDraw(hint, SW/2 - FMeasure(hint,13)/2, 62, 13, COL_DIM);
 
-            // Column headers
+            //columns
             int col0=100, col1=320, col2=500;
             FDraw("Process",      col0, 140, 15, COL_DIM);
             FDraw("Arrival Time", col1, 140, 15, COL_DIM);
@@ -164,11 +164,11 @@ int main(void) {
             for (int i = 0; i < n; i++) {
                 int y = 175 + i*50;
 
-                // PID label
+                //PID
                 char pid[8]; snprintf(pid, 8, "P%d", i+1);
                 FDraw(pid, col0+20, y+7, 16, COL_TEXT);
 
-                // Arrival cell
+                //Arrival
                 Rectangle rA = {col1, y, 140, 34};
                 bool aActive = (activeField == i*2+0);
                 DrawRectangleRec(rA, aActive ? COL_ACTIVE : COL_SURFACE);
@@ -180,7 +180,7 @@ int main(void) {
                 if (aActive && ((int)(GetTime()*2) % 2 == 0))
                     FDraw("|", col1+8+FMeasure(aStr,16), y+8, 16, COL_ACCENT);
 
-                // Burst cell
+                //Burst time
                 Rectangle rB = {col2, y, 140, 34};
                 bool bActive = (activeField == i*2+1);
                 DrawRectangleRec(rB, bActive ? COL_ACTIVE : COL_SURFACE);
@@ -193,7 +193,7 @@ int main(void) {
                     FDraw("|", col2+8+FMeasure(bStr,16), y+8, 16, COL_ACCENT);
             }
 
-            // Compute button
+            //compute button or as we say in marathi, gundi
             Rectangle btnR = {SW/2-80, SH-90, 160, 44};
             bool hover = CheckCollisionPointRec(GetMousePosition(), btnR);
             DrawRectangleRec(btnR, hover ? COL_BTN_HOV : COL_BTN);
@@ -202,12 +202,12 @@ int main(void) {
             FDraw(btnLabel, SW/2 - FMeasure(btnLabel,18)/2, SH-80, 18, COL_TEXT);
 
         } else {
-            // Result screen
+            //result screen
             const char *title = "FCFS  RESULTS";
             FDraw(title, SW/2 - FMeasure(title,20)/2, 18, 20, COL_ACCENT);
             FDraw("ESC / BACKSPACE to go back", 20, 18, 13, COL_DIM);
 
-            // --- Gantt Chart ---
+            //gantt chart
             int totalTime = procs[computed-1].finish;
             int ganttX = 60, ganttY = 62, ganttH = 52;
             int ganttW = SW - 120;
@@ -215,7 +215,7 @@ int main(void) {
             FDraw("Gantt Chart", ganttX, ganttY - 20, 14, COL_DIM);
 
             for (int i = 0; i < computed; i++) {
-                // Idle gap before first process
+                
                 if (i == 0 && procs[0].start > 0) {
                     int ix0 = ganttX;
                     int ix1 = ganttX + (int)((float)procs[0].start / totalTime * ganttW);
@@ -225,7 +225,7 @@ int main(void) {
                     FDraw("0", ix0, ganttY+ganttH+4, 12, COL_DIM);
                 }
 
-                // Idle gap between processes
+                //gap b/w procs
                 if (i > 0 && procs[i].start > procs[i-1].finish) {
                     int ix0 = ganttX + (int)((float)procs[i-1].finish / totalTime * ganttW);
                     int ix1 = ganttX + (int)((float)procs[i].start    / totalTime * ganttW);
@@ -245,7 +245,7 @@ int main(void) {
                 if (x1-x0 > tw+4)
                     FDraw(plabel, x0+(x1-x0)/2-tw/2, ganttY+ganttH/2-9, 15, COL_TEXT);
 
-                // Time tick
+                //tick tick time is ticking
                 char ts[8]; snprintf(ts, 8, "%d", procs[i].finish);
                 DrawLine(x1, ganttY, x1, ganttY+ganttH+4, COL_BORDER);
                 FDraw(ts, x1 - FMeasure(ts,12)/2, ganttY+ganttH+5, 12, COL_DIM);
@@ -255,7 +255,7 @@ int main(void) {
                 }
             }
 
-            // --- Table ---
+            //table
             int ty = ganttY + ganttH + 48;
             int cols[] = {50, 150, 270, 390, 510, 640, 790};
             const char *headers[] = {"PID","Arrival","Burst","Start","Finish","Waiting","Turnaround"};
@@ -267,7 +267,7 @@ int main(void) {
             float sumWT=0, sumTAT=0;
             for (int i = 0; i < computed; i++) {
                 int y2 = ty + 28 + i*34;
-                // Alternating row tint
+                //row tint
                 if (i % 2 == 0)
                     DrawRectangle(40, y2-3, SW-80, 28, COL_SURFACE);
 
@@ -283,7 +283,7 @@ int main(void) {
                 sumTAT += procs[i].turnaround;
             }
 
-            // Averages
+            //calculating the averages
             int ay = ty + 28 + computed*34 + 14;
             DrawLine(40, ay-6, SW-40, ay-6, COL_BORDER);
             char avgBuf[64];
