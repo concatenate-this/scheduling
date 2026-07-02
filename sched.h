@@ -37,5 +37,7 @@ void RunScheduler(const char *windowTitle,
                   const char *algoLabel,
                   ComputeFn   compute);
  
-
+void computeFCFS(Process *procs, int n);
+void computeSJF(Process *procs, int n);
+void computeSTCF(Process *procs, int n);
 

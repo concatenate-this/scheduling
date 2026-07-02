@@ -2,8 +2,8 @@
 // Compile: gcc -O2 fcfs.c sched_ui.c -o fcfs -lraylib -lm
 #include "sched.h"
 
-static void computeFCFS(Process *procs, int n, int param) {
-    (void)param;
+void computeFCFS(Process *procs, int n) {
+    
 
     for (int i = 1; i < n; i++) {
         Process key = procs[i];
@@ -26,7 +26,7 @@ static void computeFCFS(Process *procs, int n, int param) {
     }
 }
 
-int main(void) {
+/*int main(void) {
     RunScheduler("FCFS Scheduler", "FCFS CPU SCHEDULER", computeFCFS,(SchedConfig){0});
     return 0;
-}
+}*/

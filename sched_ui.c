@@ -1,5 +1,5 @@
 #include "sched.h"
-Font gfont;
+Font gFont;
 void FDraw (const char* text, int x, int y, int size, Color col){
     DrawTextEx(gFont, text, (Vector2){x,y},size,1,col);
 }
@@ -96,7 +96,7 @@ static void DrawInputScreen(const InputState *s, const char *label, int SW, int 
  
     for (int i = 0; i < s->n; i++) {
         int y = 175 + i*50;
-        char pid[8]; snprintf(pid, sizeof(pid), "P%d", i+1);
+        char pid[16]; snprintf(pid, sizeof(pid), "P%d", i+1);
         FDraw(pid, 120, y + 7, 16, COL_TEXT);
         DrawCell(s, i*2+0, 320, y);
         DrawCell(s, i*2+1, 500, y);
